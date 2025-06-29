@@ -8,9 +8,20 @@ const SPLASH_SIZE = 35; // Increased from 22 for better visibility
 const HEAD_SIZE = 7; // más pequeño y notorio
 
 function randomMeteorData() {
-  // Expanded positioning range for better dispersion across the screen
-  const left = Math.floor(Math.random() * 80 - 80); // -80 to 0 VW (expanded from -50 to 0)
-  const top = Math.floor(Math.random() * 80 - 80);  // -80 to 0 VH (expanded from -50 to 0)
+  // Adjusted positioning to make splashes appear at the bottom
+  // We need meteors to start from positions that will result in bottom impacts
+  // Since meteors move diagonally (45 degrees), we calculate backwards from desired impact points
+  
+  // Desired impact area: bottom 20% of screen (80vh to 100vh) and full width spread
+  const impactLeft = Math.random() * 120 - 10; // -10vw to 110vw for full width coverage
+  const impactTop = 80 + Math.random() * 20; // 80vh to 100vh (bottom area)
+  
+  // Calculate starting position by moving backwards along the diagonal
+  // Since meteors move at 45 degrees, we subtract equal amounts from both axes
+  const diagonalOffset = 200; // The distance meteors travel
+  const left = impactLeft - diagonalOffset;
+  const top = impactTop - diagonalOffset;
+  
   const delay = (Math.random() * 8.0).toFixed(2); // Increased delay range for more variation
   const duration = Math.floor(Math.random() * 20 + 15); // Adjusted duration range
   return { left, top, delay, duration };
@@ -37,7 +48,7 @@ export const Meteors = ({
 
   // Calcula la posición final de impacto (desplazamiento 200vw a la derecha y mismo top)
   function getImpactPosition(data: { left: number; top: number }) {
-    const delta = 200 * Math.cos(Math.PI/4); // ~141.42vw (ángulo diagonal)
+    const delta = 200; // Diagonal movement distance
     const finalLeft = data.left + delta;
     const finalTop = data.top + delta;
     return { left: finalLeft, top: finalTop };
