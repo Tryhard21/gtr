@@ -3,7 +3,6 @@ import { toast } from "@/hooks/use-toast";
 import { FormData, FormErrors } from '@/types/form';
 import { validateForm, validateInput } from '@/utils/validation';
 import { sendToGoogleSheets } from '@/services/googleSheets';
-import { sendToSupabase } from '@/services/supabase';
 
 const initialFormData: FormData = {
     email: "",
@@ -36,11 +35,8 @@ export const useRegistrationForm = () => {
 
         if (Object.keys(newErrors).length === 0) {
             let googleSheetsSuccess = false;
-            let supabaseSuccess = false;
             let googleSheetsError = null;
-            let supabaseError = null;
 
-            // Intentar enviar a Google Sheets
             try {
                 console.log('🚀 Iniciando envío a Google Sheets...');
                 await sendToGoogleSheets(formData);
@@ -51,51 +47,24 @@ export const useRegistrationForm = () => {
                 console.error('❌ Google Sheets: Error -', error.message);
             }
 
-            // Enviar a Supabase como respaldo
-            try {
-                await sendToSupabase(formData);
-                supabaseSuccess = true;
-            } catch (error) {
-                supabaseError = error;
-            }
-
-            // Evaluar resultados y mostrar mensaje apropiado
-            if (googleSheetsSuccess || supabaseSuccess) {
-                let message = "Te contactaremos a la mayor brevedad posible.";
-                
-                if (googleSheetsSuccess && supabaseSuccess) {
-                    message += " ✅ Datos guardados correctamente.";
-                    console.log('🎉 Éxito total: Ambos sistemas funcionaron');
-                } else if (googleSheetsSuccess) {
-                    message += " ✅ Datos guardados en Google Sheets.";
-                    console.log('🎉 Éxito parcial: Google Sheets funcionó');
-                } else if (supabaseSuccess) {
-                    message += " ✅ Datos guardados en sistema de respaldo.";
-                    console.log('🎉 Éxito parcial: Supabase funcionó');
-                }
-
+            if (googleSheetsSuccess) {
                 toast({
                     title: "¡Gracias por registrarte!",
-                    description: message,
+                    description: "Te contactaremos a la mayor brevedad posible. ✅ Datos guardados correctamente en Google Sheets.",
                 });
                 
                 // Limpiar formulario
                 setFormData(initialFormData);
                 setErrors({});
             } else {
-                // Ambos sistemas fallaron
-                console.error('💥 Error total: Ambos sistemas fallaron');
+                console.error('💥 Error al enviar a Google Sheets');
                 console.error('Google Sheets:', googleSheetsError?.message);
-                console.error('Supabase:', supabaseError?.message);
                 
                 let errorMessage = "No se pudo guardar la información. ";
-                
-                if (googleSheetsError && supabaseError) {
-                    errorMessage += "Por favor inténtalo de nuevo o contacta con soporte.";
-                } else if (googleSheetsError) {
+                if (googleSheetsError) {
                     errorMessage += `Error en Google Sheets: ${googleSheetsError.message}`;
-                } else if (supabaseError) {
-                    errorMessage += `Error en sistema: ${supabaseError.message}`;
+                } else {
+                    errorMessage += "Por favor inténtalo de nuevo o contacta con soporte.";
                 }
                 
                 toast({
