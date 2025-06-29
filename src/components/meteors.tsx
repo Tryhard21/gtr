@@ -8,15 +8,17 @@ const SPLASH_SIZE = 35;
 const HEAD_SIZE = 7;
 
 function randomMeteorData() {
-  // Los meteoros deben salir desde la esquina superior izquierda
-  // y moverse diagonalmente hacia abajo-derecha
+  // Área de inicio mucho más amplia para mayor naturalidad
+  // Los meteoros pueden salir desde toda la parte superior y lateral izquierda
   
-  // Área de inicio: esquina superior izquierda extendida
-  const left = Math.random() * 30 - 50; // -50vw a -20vw (fuera del borde izquierdo)
-  const top = Math.random() * 30 - 50;  // -50vh a -20vh (fuera del borde superior)
+  // Expandir el área de origen para un ángulo más amplio y natural
+  const left = Math.random() * 80 - 70; // -70vw a 10vw (área mucho más amplia)
+  const top = Math.random() * 80 - 70;  // -70vh a 10vh (área mucho más amplia)
   
-  const delay = (Math.random() * 8.0).toFixed(2);
-  const duration = Math.floor(Math.random() * 20 + 15);
+  // Aumentar el rango de delay para mayor espaciado temporal
+  const delay = (Math.random() * 15.0).toFixed(2); // 0 a 15 segundos
+  const duration = Math.floor(Math.random() * 25 + 20); // 20 a 45 segundos
+  
   return { left, top, delay, duration };
 }
 
@@ -27,7 +29,7 @@ type MeteorSplashState = {
 };
 
 export const Meteors = ({
-  number = 20,
+  number = 15, // Reducir número por defecto para mejor espaciado
   className = "",
 }: {
   number?: number;
@@ -39,11 +41,14 @@ export const Meteors = ({
     () => Array(number).fill(0).map(() => ({ visible: false, impactLeft: 0, impactTop: 0 }))
   );
 
-  // Calcula la posición final de impacto (desplazamiento diagonal hacia abajo-derecha)
+  // Calcula la posición final de impacto con trayectoria más natural
   function getImpactPosition(data: { left: number; top: number }) {
-    const delta = 200; // Distancia diagonal que recorren
-    const finalLeft = data.left + delta;
-    const finalTop = data.top + delta;
+    // Trayectoria diagonal más variable para mayor naturalidad
+    const deltaX = 180 + Math.random() * 40; // 180-220vw horizontal
+    const deltaY = 180 + Math.random() * 40; // 180-220vh vertical
+    
+    const finalLeft = data.left + deltaX;
+    const finalTop = data.top + deltaY;
     return { left: finalLeft, top: finalTop };
   }
 
@@ -53,7 +58,7 @@ export const Meteors = ({
     const { left, top } = getImpactPosition(data);
     
     // Solo mostrar splash si el impacto está dentro del área visible o cerca del borde inferior
-    if (top >= 80) { // Solo splashes en la parte inferior de la pantalla
+    if (top >= 70 && left >= -20 && left <= 120) { // Área más amplia para splashes
       setSplashStates(states =>
         states.map((s, i) =>
           i === idx ? { visible: true, impactLeft: left, impactTop: top } : s
@@ -171,7 +176,7 @@ export const Meteors = ({
         @keyframes meteor-head-move {
           0%   { opacity:1;  transform: rotate(45deg) translateX(0);}
           80%  { opacity:1; }
-          100% { opacity:0;  transform: rotate(45deg) translateX(200vw);}
+          100% { opacity:0;  transform: rotate(45deg) translateX(220vw);}
         }
         `}
       </style>
