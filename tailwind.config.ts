@@ -105,7 +105,7 @@ export default {
         "meteor-gold": {
           "0%": { opacity: "1", transform: "rotate(45deg) translateX(0) scaleX(1) scaleY(1)" },
           "90%": { opacity: "1" },
-          "100%": { opacity: "0", transform: "rotate(45deg) translateX(200vw) scaleX(1.5) scaleY(0.7)" },
+          "100%": { opacity: "0", transform: "rotate(45deg) translateX(400vw) scaleX(1.5) scaleY(0.7)" },
         },
         "meteor-splash": {
           "0%": { opacity: "0", transform: "scale(0.3)" },

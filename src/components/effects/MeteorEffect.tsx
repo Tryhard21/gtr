@@ -26,17 +26,21 @@ const METEOR_CONFIG = {
 };
 
 const generateMeteorData = (): MeteorData => {
-    const left = Math.random() * 80 - 70; // -70vw a 10vw
-    const top = Math.random() * 80 - 70;  // -70vh a 10vh
-    const delay = (Math.random() * 15.0).toFixed(2); // 0 a 15 segundos
-    const duration = Math.floor(Math.random() * 25 + 20); // 20 a 45 segundos
+    // Ensure meteors start well outside the visible area
+    const left = Math.random() * 200 - 250; // -250vw to -50vw
+    const top = Math.random() * 200 - 250;  // -250vh to -50vh
+    const delay = (Math.random() * 15.0).toFixed(2); // 0 to 15 seconds
+    const duration = Math.floor(Math.random() * 25 + 20); // 20 to 45 seconds
     
     return { left, top, delay, duration };
 };
 
 const getImpactPosition = (data: MeteorData) => {
-    const deltaX = 180 + Math.random() * 40; // 180-220vw horizontal
-    const deltaY = 180 + Math.random() * 40; // 180-220vh vertical
+    // Calculate impact position based on 45-degree diagonal movement
+    // Using the increased translateX distance from the animation (400vw)
+    const diagonalDistance = 400; // matches the translateX in meteor-gold animation
+    const deltaX = diagonalDistance * Math.cos(Math.PI / 4); // ~282.84vw
+    const deltaY = diagonalDistance * Math.sin(Math.PI / 4); // ~282.84vh
     
     return {
         left: data.left + deltaX,
@@ -58,27 +62,25 @@ export const MeteorEffect: React.FC<MeteorEffectProps> = ({
         const data = meteorsData[idx];
         const { left, top } = getImpactPosition(data);
         
-        // Solo mostrar splash si el impacto está dentro del área visible
-        if (top >= 70 && left >= -20 && left <= 120) {
-            setSplashStates(states =>
-                states.map((s, i) =>
-                    i === idx ? { visible: true, impactLeft: left, impactTop: top } : s
-                )
-            );
-            
-            const splash = splashRefs.current[idx];
-            if (splash) {
-                splash.classList.remove("animate-meteor-splash");
-                void splash.offsetWidth;
-                splash.classList.add("animate-meteor-splash");
-            }
-            
-            setTimeout(() => {
-                setSplashStates(states =>
-                    states.map((s, i) => (i === idx ? { ...s, visible: false } : s))
-                );
-            }, 500);
+        // Always show splash at calculated impact position
+        setSplashStates(states =>
+            states.map((s, i) =>
+                i === idx ? { visible: true, impactLeft: left, impactTop: top } : s
+            )
+        );
+        
+        const splash = splashRefs.current[idx];
+        if (splash) {
+            splash.classList.remove("animate-meteor-splash");
+            void splash.offsetWidth;
+            splash.classList.add("animate-meteor-splash");
         }
+        
+        setTimeout(() => {
+            setSplashStates(states =>
+                states.map((s, i) => (i === idx ? { ...s, visible: false } : s))
+            );
+        }, 500);
     };
 
     return (
@@ -137,15 +139,6 @@ export const MeteorEffect: React.FC<MeteorEffectProps> = ({
                     </React.Fragment>
                 );
             })}
-            <style>
-                {`
-                @keyframes meteor-head-move {
-                    0%   { opacity:1;  transform: rotate(45deg) translateX(0);}
-                    80%  { opacity:1; }
-                    100% { opacity:0;  transform: rotate(45deg) translateX(220vw);}
-                }
-                `}
-            </style>
         </>
     );
 };
