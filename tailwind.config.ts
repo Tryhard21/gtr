@@ -108,9 +108,10 @@ export default {
           "100%": { opacity: "0", transform: "rotate(45deg) translateX(200vw) scaleX(1.5) scaleY(0.7)" },
         },
         "meteor-splash": {
-          "0%": { opacity: "0.7", transform: "scale(0.7)" },
-          "70%": { opacity: "1", transform: "scale(1.2)" },
-          "100%": { opacity: "0", transform: "scale(2)" },
+          "0%": { opacity: "0", transform: "scale(0.3)" },
+          "30%": { opacity: "0.8", transform: "scale(1)" },
+          "70%": { opacity: "1", transform: "scale(1.4)" },
+          "100%": { opacity: "0", transform: "scale(2.5)" },
         },
 			},
 			animation: {
@@ -119,7 +120,7 @@ export default {
         "fade-in": "fade-in 0.6s ease-out forwards",
         "meteor-effect": "meteor 5s linear infinite",
         "meteor-gold": "meteor-gold 9s linear infinite",
-        "meteor-splash": "meteor-splash 0.26s cubic-bezier(0.42, 0, 0.58, 1)",
+        "meteor-splash": "meteor-splash 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
 			}
 		}
 	},

@@ -2,17 +2,17 @@ import React, { useRef, useEffect, useState } from "react";
 
 const GOLD_GRADIENT = "linear-gradient(90deg,#f7c873 0%, #fff2b0 40%, #b2852d 100%)";
 const SHADOW_COLOR = "rgba(247,200,115,0.5)";
-const SPLASH_SIZE = 22;
+const SPLASH_SIZE = 35; // Increased from 22 for better visibility
 
 // Parámetros visuales ajustados para una cabeza pequeña y bien pegada.
 const HEAD_SIZE = 7; // más pequeño y notorio
 
 function randomMeteorData() {
-  // Posicionamiento de salida para cubrir bien el área visual
-  const left = Math.floor(Math.random() * 50 - 50); // -50 a 0 VW
-  const top = Math.floor(Math.random() * 50 - 50);  // -50 a 0 VH
-  const delay = (Math.random() * 5.0).toFixed(2);
-  const duration = Math.floor(Math.random() * 15 + 20);
+  // Expanded positioning range for better dispersion across the screen
+  const left = Math.floor(Math.random() * 80 - 80); // -80 to 0 VW (expanded from -50 to 0)
+  const top = Math.floor(Math.random() * 80 - 80);  // -80 to 0 VH (expanded from -50 to 0)
+  const delay = (Math.random() * 8.0).toFixed(2); // Increased delay range for more variation
+  const duration = Math.floor(Math.random() * 20 + 15); // Adjusted duration range
   return { left, top, delay, duration };
 }
 
@@ -64,7 +64,7 @@ export const Meteors = ({
       setSplashStates(states =>
         states.map((s, i) => (i === idx ? { ...s, visible: false } : s))
       );
-    }, 350);
+    }, 500); // Increased timeout for better visibility
   }
 
   return (
@@ -122,13 +122,12 @@ export const Meteors = ({
               width: SPLASH_SIZE,
               height: SPLASH_SIZE,
               opacity: 1,
-              transform: "translate(-55%, -55%) scale(1.18)",
+              transform: "translate(-50%, -50%) scale(1)",
               background: "radial-gradient(circle, #fffbe7 0%, #ffe4ae99 44%, #f7c87344 100%)",
               borderRadius: "50%",
-              boxShadow: `0 0 28px 7px #f7c87388, 0 0 0 1.5px #fff49f8c`,
-              filter: "blur(1.5px)",
+              boxShadow: `0 0 35px 10px #f7c87388, 0 0 0 2px #fff49f8c`,
+              filter: "blur(1px)",
               pointerEvents: "none",
-              transition: "opacity 0.13s",
             }
           : { opacity: 0, pointerEvents: "none" };
 
@@ -150,7 +149,7 @@ export const Meteors = ({
             {/* Splash al impactar */}
             <span
               ref={el => (splashRefs.current[idx] = el)}
-              className={`absolute pointer-events-none transition-opacity duration-150 ${visible ? "animate-meteor-splash" : ""}`}
+              className={`absolute pointer-events-none ${visible ? "animate-meteor-splash" : ""}`}
               style={splashStyle}
             />
           </React.Fragment>
