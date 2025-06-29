@@ -1,14 +1,18 @@
 import React from 'react';
-import { FormInput } from './FormInput';
-import { FormData, FormErrors } from '@/hooks/useRegistrationForm';
+import { FormInput } from '@/components/ui/form-input';
+import { FormData, FormErrors } from '@/types/form';
 
-type PersonalInfoFieldsProps = {
+interface PersonalInfoSectionProps {
     formData: FormData;
     errors: FormErrors;
     handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-};
+}
 
-export const PersonalInfoFields = ({ formData, errors, handleChange }: PersonalInfoFieldsProps) => {
+export const PersonalInfoSection: React.FC<PersonalInfoSectionProps> = ({ 
+    formData, 
+    errors, 
+    handleChange 
+}) => {
     return (
         <>
             <FormInput
