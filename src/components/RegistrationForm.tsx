@@ -1,15 +1,8 @@
-
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { useRegistrationForm } from "@/hooks/useRegistrationForm";
 import { PersonalInfoFields } from "./form/PersonalInfoFields";
 import { TradingQuestionnaire } from "./form/TradingQuestionnaire";
-import HCaptcha from "@hcaptcha/react-hcaptcha";
-
-// IMPORTANTE: Usa la Sitekey real, registrada y activa en hCaptcha.
-// Usamos la sitekey asociada a "Solware" según tu screenshot.
-// Si quieres otra, solo reemplaza el valor.
-const HCAPTCHA_SITEKEY = "f27a6462-42ce-486c-b2a6-fac68e8ae1f6";
 
 export default function RegistrationForm() {
     const {
@@ -18,8 +11,6 @@ export default function RegistrationForm() {
         handleChange,
         handleSelectChange,
         handleSubmit,
-        setCaptchaToken,
-        captchaRef,
         isSubmitting,
     } = useRegistrationForm();
 
@@ -35,14 +26,6 @@ export default function RegistrationForm() {
                     <TradingQuestionnaire
                         formData={formData}
                         handleSelectChange={handleSelectChange}
-                    />
-                </div>
-                <div className="flex justify-center pt-2">
-                    <HCaptcha
-                        sitekey={HCAPTCHA_SITEKEY}
-                        onVerify={setCaptchaToken}
-                        ref={captchaRef}
-                        theme="dark"
                     />
                 </div>
                 <div className="flex justify-center pt-4">

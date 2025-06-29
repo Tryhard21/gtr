@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState } from "react";
 import { toast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -47,8 +47,6 @@ export const useRegistrationForm = () => {
     const [formData, setFormData] = useState<FormData>(initialFormData);
     const [errors, setErrors] = useState<FormErrors>({});
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const [captchaToken, setCaptchaToken] = useState<string | null>(null);
-    const captchaRef = useRef<any>(null);
 
     const validate = (): FormErrors => {
         const newErrors: FormErrors = {};
@@ -143,15 +141,6 @@ export const useRegistrationForm = () => {
         setIsSubmitting(true);
 
         const newErrors = validate();
-        if (!captchaToken) {
-            toast({
-                title: "Verificación requerida",
-                description: "Por favor, completa el CAPTCHA para continuar.",
-                variant: "destructive",
-            });
-            setIsSubmitting(false);
-            return;
-        }
         setErrors(newErrors);
 
         if (Object.keys(newErrors).length === 0) {
@@ -172,10 +161,10 @@ export const useRegistrationForm = () => {
             }
 
             try {
-                // Enviar a Supabase como respaldo
+                // Enviar a Supabase como respaldo (sin CAPTCHA)
                 console.log('🚀 Iniciando envío a Supabase...');
                 const { data: supabaseData, error } = await supabase.functions.invoke('submit-registration', {
-                    body: { formData, captchaToken },
+                    body: { formData },
                 });
                 
                 if (!error) {
@@ -213,8 +202,6 @@ export const useRegistrationForm = () => {
                 // Limpiar formulario
                 setFormData(initialFormData);
                 setErrors({});
-                setCaptchaToken(null);
-                captchaRef.current?.resetCaptcha();
             } else {
                 // Ambos sistemas fallaron
                 console.error('💥 Error total: Ambos sistemas fallaron');
@@ -271,7 +258,5 @@ export const useRegistrationForm = () => {
         handleSelectChange,
         handleSubmit,
         isSubmitting,
-        setCaptchaToken,
-        captchaRef,
     };
 };
